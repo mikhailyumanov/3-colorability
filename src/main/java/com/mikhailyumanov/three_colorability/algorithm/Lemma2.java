@@ -16,14 +16,15 @@ public class Lemma2 implements Reduction {
     Difference difference = new Difference();
     for (Variable variable : instance.getVariables()) {
       if (variable.getColors().size() == 2) {
-        difference.union(toEliminate(instance, variable));
+        difference.union(toUpdate(instance, variable));
       }
     }
 
     return difference;
   }
 
-  public Difference toEliminate(CSPInstance instance, Variable variable) {
+  @Override
+  public Difference toUpdate(CSPInstance instance, Variable variable) {
     VarColor varColor1 = new VarColor(variable, variable.getColors().get(0));
     VarColor varColor2 = new VarColor(variable, variable.getColors().get(1));
 
@@ -36,11 +37,7 @@ public class Lemma2 implements Reduction {
     removing.setVariables(List.of(variable));
     removing.setConstraints(
         instance.getConstraints().stream()
-            .filter(pair ->
-                pair.getFirst().equals(varColor1) ||
-                pair.getSecond().equals(varColor1) ||
-                pair.getFirst().equals(varColor2) ||
-                pair.getSecond().equals(varColor2))
+            .filter(pair -> pair.contains(varColor1) || pair.contains(varColor2))
             .collect(Collectors.toList()));
 
     return new Difference(adding, removing);
@@ -48,13 +45,13 @@ public class Lemma2 implements Reduction {
 
   public List<VarColor> getConflict(CSPInstance instance, VarColor varColor) {
     return instance.getConstraints().stream()
-        .filter(pair -> pair.getFirst().equals(varColor) || pair.getSecond().equals(varColor))
+        .filter(pair -> pair.contains(varColor))
         .map(pair -> pair.getFirst().equals(varColor) ? pair.getSecond() : pair.getFirst())
         .collect(Collectors.toList());
   }
 
-  public List<Pair<VarColor, VarColor>> getCartesianProduct(List<VarColor> l1, List<VarColor> l2) {
-    ArrayList<Pair<VarColor, VarColor>> tmp = new ArrayList<>();
+  public List<Pair<VarColor>> getCartesianProduct(List<VarColor> l1, List<VarColor> l2) {
+    ArrayList<Pair<VarColor>> tmp = new ArrayList<>();
     for (VarColor varColor1 : l1) {
       for (VarColor varColor2 : l2) {
         if (!varColor1.getVariable().equals(varColor2.getVariable())) {

@@ -2,11 +2,11 @@ package com.mikhailyumanov.three_colorability.util;
 
 import java.util.Objects;
 
-public class Pair<T, U> {
+public class Pair<T> {
   T first;
-  U second;
+  T second;
 
-  public Pair(T first, U second) {
+  public Pair(T first, T second) {
     this.first = first;
     this.second = second;
   }
@@ -19,19 +19,23 @@ public class Pair<T, U> {
     this.first = first;
   }
 
-  public U getSecond() {
+  public T getSecond() {
     return second;
   }
 
-  public void setSecond(U second) {
+  public void setSecond(T second) {
     this.second = second;
+  }
+
+  public boolean contains(T t) {
+    return first.equals(t) || second.equals(t);
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Pair<?, ?> pair = (Pair<?, ?>) o;
+    Pair<?> pair = (Pair<?>) o;
     return Objects.equals(first, pair.first) &&
         Objects.equals(second, pair.second);
   }

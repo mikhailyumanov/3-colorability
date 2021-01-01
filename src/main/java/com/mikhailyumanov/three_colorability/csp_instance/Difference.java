@@ -14,11 +14,10 @@ public class Difference {
   }
 
   public Difference union(Difference other) {
-    Difference tmp = new Difference();
-    tmp.adding = adding.union(other.adding);
-    tmp.removing = removing.union(other.removing);
+    adding.union(other.adding);
+    removing.union(other.removing);
 
-    return tmp;
+    return this;
   }
 
   public CSPInstance getAdding() {

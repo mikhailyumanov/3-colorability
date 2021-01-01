@@ -22,7 +22,7 @@ class DifferenceTest {
         new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE))
     );
 
-    List<Pair<VarColor, VarColor>> constraints_before = List.of(
+    List<Pair<VarColor>> constraints_before = List.of(
         new Pair<>(
             new VarColor(variables_before.get(0), Color.BLUE),
             new VarColor(variables_before.get(2), Color.RED)),
@@ -44,7 +44,7 @@ class DifferenceTest {
     CSPInstance instance_before = new CSPInstance(variables_before, constraints_before);
     CSPInstance instance_after = instance_before.withDifference(lemma2.perform(instance_before));
 
-    List<Pair<VarColor, VarColor>> constraints_final = List.of(
+    List<Pair<VarColor>> constraints_final = List.of(
         new Pair<>(
             new VarColor(instance_after.getVariables().get(0), Color.BLUE),
             new VarColor(instance_after.getVariables().get(2), Color.RED)),

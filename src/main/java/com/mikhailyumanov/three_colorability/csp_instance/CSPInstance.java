@@ -3,19 +3,37 @@ package com.mikhailyumanov.three_colorability.csp_instance;
 import com.mikhailyumanov.three_colorability.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CSPInstance {
   List<Variable> variables = new ArrayList<>();
-  List<Pair<VarColor, VarColor>> constraints = new ArrayList<>();
+  List<Pair<VarColor>> constraints = new ArrayList<>();
 
   public CSPInstance() {}
 
   public CSPInstance(List<Variable> variables,
-                     List<Pair<VarColor, VarColor>> constraints) {
+                     List<Pair<VarColor>> constraints) {
     this.variables = variables;
     this.constraints = constraints;
+  }
+
+  public List<VarColor> getVarColors() {
+    List<VarColor> tmp = new ArrayList<>();
+    for (Variable variable : variables) {
+      for (Color color : variable.getColors()) {
+        tmp.add(new VarColor(variable, color));
+      }
+    }
+
+    return tmp;
+  }
+
+  public List<Pair<VarColor>> getIncident(VarColor varColor) {
+    return getConstraints().stream()
+        .filter(pair -> pair.contains(varColor)).collect(Collectors.toList());
   }
 
   public List<Variable> getVariables() {
@@ -26,11 +44,11 @@ public class CSPInstance {
     this.variables = variables;
   }
 
-  public List<Pair<VarColor, VarColor>> getConstraints() {
+  public List<Pair<VarColor>> getConstraints() {
     return constraints;
   }
 
-  public void setConstraints(List<Pair<VarColor, VarColor>> constraints) {
+  public void setConstraints(List<Pair<VarColor>> constraints) {
     this.constraints = constraints;
   }
 
@@ -43,25 +61,20 @@ public class CSPInstance {
   }
 
   public CSPInstance union(CSPInstance other) {
-    CSPInstance tmp = new CSPInstance();
-    tmp.variables.addAll(getVariables());
-    tmp.variables.addAll(other.getVariables());
+    variables.addAll(other.getVariables());
+    variables = variables.stream().distinct().collect(Collectors.toList());
 
-    tmp.constraints.addAll(getConstraints());
-    tmp.constraints.addAll(other.getConstraints());
+    constraints.addAll(other.getConstraints());
+    constraints = constraints.stream().distinct().collect(Collectors.toList());
 
-    return tmp;
+    return this;
   }
 
   public CSPInstance complement(CSPInstance other) {
-    CSPInstance tmp = new CSPInstance();
-    tmp.variables.addAll(getVariables());
-    tmp.variables.removeAll(other.getVariables());
+    variables.removeAll(other.getVariables());
+    constraints.removeAll(other.getConstraints());
 
-    tmp.constraints.addAll(getConstraints());
-    tmp.constraints.removeAll(other.getConstraints());
-
-    return tmp;
+    return this;
   }
 
   public CSPInstance withDifference(Difference difference) {

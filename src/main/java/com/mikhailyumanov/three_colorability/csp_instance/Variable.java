@@ -12,7 +12,7 @@ public class Variable {
   public Variable() {}
 
   public Variable(List<Color> colors) {
-    this.id = ++counter;
+    this.id = counter++;
     this.colors = colors;
   }
 

@@ -20,7 +20,7 @@ class Lemma2TestWithCrossConstraints {
       new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE))
   );
 
-  List<Pair<VarColor, VarColor>> constraints = List.of(
+  List<Pair<VarColor>> constraints = List.of(
       new Pair<>(
           new VarColor(variables.get(0), Color.BLUE),
           new VarColor(variables.get(2), Color.RED)),
@@ -102,28 +102,28 @@ class Lemma2TestWithCrossConstraints {
     ));
 
     assertEquals(
-        lemma2.toEliminate(instance, variables.get(2)),
-        new Difference(adding, removing)
+        new Difference(adding, removing),
+        lemma2.toUpdate(instance, variables.get(2))
     );
   }
 
   @Test
   void testGetConflict() {
     assertEquals(
-        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.RED)),
         List.of(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(1), Color.RED)
-        )
+        ),
+        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.RED))
     );
     assertEquals(
-        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.GREEN)),
         List.of(
             new VarColor(variables.get(1), Color.GREEN),
             new VarColor(variables.get(3), Color.GREEN),
             new VarColor(variables.get(4), Color.GREEN),
             new VarColor(variables.get(5), Color.RED)
-        )
+        ),
+        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.GREEN))
     );
   }
 
@@ -141,7 +141,6 @@ class Lemma2TestWithCrossConstraints {
         new VarColor(variables.get(5), Color.RED));
 
     assertEquals(
-        lemma2.getCartesianProduct(l1, l2),
         List.of(
             new Pair<>(
                 new VarColor(variables.get(0), Color.BLUE),
@@ -164,7 +163,8 @@ class Lemma2TestWithCrossConstraints {
             new Pair<>(
                 new VarColor(variables.get(1), Color.RED),
                 new VarColor(variables.get(5), Color.RED))
-        )
+        ),
+        lemma2.getCartesianProduct(l1, l2)
     );
   }
 }
