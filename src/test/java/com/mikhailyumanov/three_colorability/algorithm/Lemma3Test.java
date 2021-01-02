@@ -66,7 +66,7 @@ class Lemma3Test {
 
   }};
 
-  CSPInstance instance = new CSPInstance(variables, constraints);
+  CSPInstance instance = new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints));
   
   @Test
   void testResultWithDifference() {
@@ -88,7 +88,7 @@ class Lemma3Test {
     }};
 
     assertEquals(
-        new CSPInstance(instance_after.getVariables(), constraints_final),
+        new CSPInstance(variables.subList(2, 4), constraints_final),
         instance_after
     );
   }
