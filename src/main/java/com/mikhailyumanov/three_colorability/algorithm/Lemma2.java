@@ -4,7 +4,7 @@ import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.csp_instance.Difference;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Variable;
-import com.mikhailyumanov.three_colorability.util.Pair;
+import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Lemma2 implements Reduction {
     adding.setConstraints(getCartesianProduct(conflict1, conflict2));
 
     CSPInstance removing = new CSPInstance();
-    removing.setVariables(List.of(variable));
+    removing.setVariables(new ArrayList<>() {{ add(variable); }});
     removing.setConstraints(
         instance.getConstraints().stream()
             .filter(pair -> pair.contains(varColor1) || pair.contains(varColor2))
@@ -50,12 +50,12 @@ public class Lemma2 implements Reduction {
         .collect(Collectors.toList());
   }
 
-  public List<Pair<VarColor>> getCartesianProduct(List<VarColor> l1, List<VarColor> l2) {
-    ArrayList<Pair<VarColor>> tmp = new ArrayList<>();
+  public List<Constraint> getCartesianProduct(List<VarColor> l1, List<VarColor> l2) {
+    ArrayList<Constraint> tmp = new ArrayList<>();
     for (VarColor varColor1 : l1) {
       for (VarColor varColor2 : l2) {
         if (!varColor1.getVariable().equals(varColor2.getVariable())) {
-          tmp.add(new Pair<>(varColor1, varColor2));
+          tmp.add(new Constraint(varColor1, varColor2));
         }
       }
     }

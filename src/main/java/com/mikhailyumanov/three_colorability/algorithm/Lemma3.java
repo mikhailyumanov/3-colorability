@@ -3,8 +3,7 @@ package com.mikhailyumanov.three_colorability.algorithm;
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.csp_instance.Difference;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
-import com.mikhailyumanov.three_colorability.csp_instance.Variable;
-import com.mikhailyumanov.three_colorability.util.Pair;
+import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +20,14 @@ public class Lemma3 implements Reduction {
           continue;
         }
 
-        List<Pair<VarColor>> involving1 = getSuitableConstraints(instance, varColor1, varColor2);
-        List<Pair<VarColor>> involving2 = getSuitableConstraints(instance, varColor2, varColor1);
+        List<Constraint> involving1 = getSuitableConstraints(instance, varColor1, varColor2);
+        List<Constraint> involving2 = getSuitableConstraints(instance, varColor2, varColor1);
+
+        if (involving1.isEmpty() || involving2.isEmpty()) {
+          // 'Equivalent' to getIncident(varColor1).isEmpty() || getIncident(varColor2).isEmpty()
+          // in this case.
+          continue;
+        }
 
         if (instance.getIncident(varColor1).size() == involving1.size() &&
             instance.getIncident(varColor2).size() == involving2.size()) {
@@ -36,7 +41,7 @@ public class Lemma3 implements Reduction {
     return difference;
   }
 
-  public List<Pair<VarColor>> getSuitableConstraints(CSPInstance instance, VarColor varColor1, VarColor varColor2) {
+  public List<Constraint> getSuitableConstraints(CSPInstance instance, VarColor varColor1, VarColor varColor2) {
     return instance.getConstraints().stream()
         .filter(pair -> pair.contains(varColor1))
         .filter(pair ->

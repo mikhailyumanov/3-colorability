@@ -1,33 +1,33 @@
-package com.mikhailyumanov.three_colorability.util;
+package com.mikhailyumanov.three_colorability.csp_instance;
 
 import java.util.Objects;
 
-public class Pair<T> {
-  T first;
-  T second;
+public class Constraint {
+  VarColor first;
+  VarColor second;
 
-  public Pair(T first, T second) {
+  public Constraint(VarColor first, VarColor second) {
     this.first = first;
     this.second = second;
   }
 
-  public T getFirst() {
+  public VarColor getFirst() {
     return first;
   }
 
-  public void setFirst(T first) {
+  public void setFirst(VarColor first) {
     this.first = first;
   }
 
-  public T getSecond() {
+  public VarColor getSecond() {
     return second;
   }
 
-  public void setSecond(T second) {
+  public void setSecond(VarColor second) {
     this.second = second;
   }
 
-  public boolean contains(T t) {
+  public boolean contains(VarColor t) {
     return first.equals(t) || second.equals(t);
   }
 
@@ -35,9 +35,9 @@ public class Pair<T> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Pair<?> pair = (Pair<?>) o;
-    return Objects.equals(first, pair.first) &&
-        Objects.equals(second, pair.second);
+    Constraint constraint = (Constraint) o;
+    return Objects.equals(first, constraint.first) &&
+        Objects.equals(second, constraint.second);
   }
 
   @Override

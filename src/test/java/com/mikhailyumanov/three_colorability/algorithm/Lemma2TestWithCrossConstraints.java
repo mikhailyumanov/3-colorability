@@ -1,9 +1,11 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
-import com.mikhailyumanov.three_colorability.util.Pair;
+import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,69 +13,99 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class Lemma2TestWithCrossConstraints {
   Lemma2 lemma2 = new Lemma2();
 
-  List<Variable> variables = List.of(
-      new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)),
-      new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)),
-      new Variable(List.of(Color.RED, Color.GREEN)),
-      new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)),
-      new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)),
-      new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE))
-  );
+  List<Variable> variables = new ArrayList<>() {{
+    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
+    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
+    add(new Variable(List.of(Color.RED, Color.GREEN)));
+    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
+    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
+    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
+  }};
 
-  List<Pair<VarColor>> constraints = List.of(
-      new Pair<>(
+  List<Constraint> constraints = new ArrayList<>() {{
+    add(new Constraint(
           new VarColor(variables.get(0), Color.BLUE),
-          new VarColor(variables.get(2), Color.RED)),
-      new Pair<>(
+          new VarColor(variables.get(2), Color.RED)));
+    add(new Constraint(
           new VarColor(variables.get(1), Color.RED),
-          new VarColor(variables.get(2), Color.RED)),
+          new VarColor(variables.get(2), Color.RED)));
 
       /// Extra constraint
-      new Pair<>(
+    add(new Constraint(
           new VarColor(variables.get(1), Color.GREEN),
-          new VarColor(variables.get(2), Color.GREEN)),
+          new VarColor(variables.get(2), Color.GREEN)));
       ///
 
-      new Pair<>(
+    add(new Constraint(
           new VarColor(variables.get(3), Color.GREEN),
-          new VarColor(variables.get(2), Color.GREEN)),
-      new Pair<>(
+          new VarColor(variables.get(2), Color.GREEN)));
+    add(new Constraint(
           new VarColor(variables.get(4), Color.GREEN),
-          new VarColor(variables.get(2), Color.GREEN)),
-      new Pair<>(
+          new VarColor(variables.get(2), Color.GREEN)));
+    add(new Constraint(
           new VarColor(variables.get(5), Color.RED),
-          new VarColor(variables.get(2), Color.GREEN))
-  );
+          new VarColor(variables.get(2), Color.GREEN)));
+  }};
 
   CSPInstance instance = new CSPInstance(variables, constraints);
 
   @Test
-  void testPerform() {
+  void testResultWithDifference() {
+    CSPInstance instance_after = instance.withDifference(lemma2.perform(instance));
+
+    List<Constraint> constraints_final = List.of(
+        new Constraint(
+            new VarColor(variables.get(0), Color.BLUE),
+            new VarColor(variables.get(1), Color.GREEN)),
+        new Constraint(
+            new VarColor(variables.get(0), Color.BLUE),
+            new VarColor(variables.get(3), Color.GREEN)),
+        new Constraint(
+            new VarColor(variables.get(0), Color.BLUE),
+            new VarColor(variables.get(4), Color.GREEN)),
+        new Constraint(
+            new VarColor(variables.get(0), Color.BLUE),
+            new VarColor(variables.get(5), Color.RED)),
+        new Constraint(
+            new VarColor(variables.get(1), Color.RED),
+            new VarColor(variables.get(3), Color.GREEN)),
+        new Constraint(
+            new VarColor(variables.get(1), Color.RED),
+            new VarColor(variables.get(4), Color.GREEN)),
+        new Constraint(
+            new VarColor(variables.get(1), Color.RED),
+            new VarColor(variables.get(5), Color.RED))
+    );
+
+    assertEquals(
+        new CSPInstance(instance_after.getVariables(), constraints_final),
+        instance_after
+    );
   }
 
   @Test
   void testToEliminate() {
     CSPInstance adding = new CSPInstance();
     adding.setConstraints(List.of(
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(1), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(3), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(4), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(5), Color.RED)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(1), Color.RED),
             new VarColor(variables.get(3), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(1), Color.RED),
             new VarColor(variables.get(4), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(1), Color.RED),
             new VarColor(variables.get(5), Color.RED))
     ));
@@ -81,22 +113,22 @@ class Lemma2TestWithCrossConstraints {
     CSPInstance removing = new CSPInstance();
     removing.setVariables(List.of(variables.get(2)));
     removing.setConstraints(List.of(
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
             new VarColor(variables.get(2), Color.RED)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(1), Color.RED),
             new VarColor(variables.get(2), Color.RED)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(1), Color.GREEN),
             new VarColor(variables.get(2), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(3), Color.GREEN),
             new VarColor(variables.get(2), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(4), Color.GREEN),
             new VarColor(variables.get(2), Color.GREEN)),
-        new Pair<>(
+        new Constraint(
             new VarColor(variables.get(5), Color.RED),
             new VarColor(variables.get(2), Color.GREEN))
     ));
@@ -142,25 +174,25 @@ class Lemma2TestWithCrossConstraints {
 
     assertEquals(
         List.of(
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(0), Color.BLUE),
                 new VarColor(variables.get(1), Color.GREEN)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(0), Color.BLUE),
                 new VarColor(variables.get(3), Color.GREEN)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(0), Color.BLUE),
                 new VarColor(variables.get(4), Color.GREEN)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(0), Color.BLUE),
                 new VarColor(variables.get(5), Color.RED)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(1), Color.RED),
                 new VarColor(variables.get(3), Color.GREEN)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(1), Color.RED),
                 new VarColor(variables.get(4), Color.GREEN)),
-            new Pair<>(
+            new Constraint(
                 new VarColor(variables.get(1), Color.RED),
                 new VarColor(variables.get(5), Color.RED))
         ),

@@ -1,21 +1,18 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
-import com.mikhailyumanov.three_colorability.util.Pair;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CSPInstance {
   List<Variable> variables = new ArrayList<>();
-  List<Pair<VarColor>> constraints = new ArrayList<>();
+  List<Constraint> constraints = new ArrayList<>();
 
   public CSPInstance() {}
 
   public CSPInstance(List<Variable> variables,
-                     List<Pair<VarColor>> constraints) {
+                     List<Constraint> constraints) {
     this.variables = variables;
     this.constraints = constraints;
   }
@@ -31,9 +28,9 @@ public class CSPInstance {
     return tmp;
   }
 
-  public List<Pair<VarColor>> getIncident(VarColor varColor) {
+  public List<Constraint> getIncident(VarColor varColor) {
     return getConstraints().stream()
-        .filter(pair -> pair.contains(varColor)).collect(Collectors.toList());
+        .filter(constraint -> constraint.contains(varColor)).collect(Collectors.toList());
   }
 
   public List<Variable> getVariables() {
@@ -44,11 +41,11 @@ public class CSPInstance {
     this.variables = variables;
   }
 
-  public List<Pair<VarColor>> getConstraints() {
+  public List<Constraint> getConstraints() {
     return constraints;
   }
 
-  public void setConstraints(List<Pair<VarColor>> constraints) {
+  public void setConstraints(List<Constraint> constraints) {
     this.constraints = constraints;
   }
 

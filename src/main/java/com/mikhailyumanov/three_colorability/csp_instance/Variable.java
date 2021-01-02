@@ -6,10 +6,12 @@ import java.util.Objects;
 
 public class Variable {
   private static int counter;
-  private int id;
+  private final int id;
   List<Color> colors = new ArrayList<>();
 
-  public Variable() {}
+  public Variable() {
+    this.id = counter++;
+  }
 
   public Variable(List<Color> colors) {
     this.id = counter++;
