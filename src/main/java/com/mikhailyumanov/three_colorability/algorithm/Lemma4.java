@@ -25,7 +25,7 @@ public class Lemma4 implements Reduction {
               !conflict2.isEmpty() &&
               conflict1.containsAll(conflict2)) {
             modifier.addInstruction(new RemoveColor(instance, varColor1));
-            modifier.applyOne();
+            modifier.apply();
           }
         }
       }

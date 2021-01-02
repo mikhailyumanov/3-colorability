@@ -22,7 +22,7 @@ public class TestWrapper {
 
     CSPInstance instance = CSPInstance.copyFrom(test_input_instance);
     modifier = new Modifier(instance);
-    modifier.setChangeList(reduction.perform(modifier, instance));
+    modifier.addChangeList(reduction.perform(modifier, instance));
     modifier.apply();
     train_reduced_instance = modifier.getInstance();
   }

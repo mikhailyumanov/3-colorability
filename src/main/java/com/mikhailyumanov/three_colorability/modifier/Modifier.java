@@ -56,4 +56,9 @@ public class Modifier {
   public CSPInstance getInstance() {
     return instance;
   }
+
+  public void addChangeList(List<ChangeInstruction> perform) {
+    changeListApply.addAll(perform.stream()
+        .map(ChangeInstruction::generateChange).collect(Collectors.toList()));
+  }
 }
