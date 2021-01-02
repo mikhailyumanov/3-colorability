@@ -3,19 +3,19 @@ package com.mikhailyumanov.three_colorability.csp_instance;
 import java.util.Objects;
 
 public class VarColor implements CSPEntity {
-  Variable variable;
+  int variable;
   Color color;
 
-  public VarColor(Variable variable, Color color) {
+  public VarColor(int variable, Color color) {
     this.variable = variable;
     this.color = color;
   }
 
-  public Variable getVariable() {
+  public int getVariable() {
     return variable;
   }
 
-  public void setVariable(Variable variable) {
+  public void setVariable(int variable) {
     this.variable = variable;
   }
 
@@ -44,7 +44,7 @@ public class VarColor implements CSPEntity {
   @Override
   public String toString() {
     return "VarColor{" +
-        "variable=" + variable.getId() +
+        "variable=" + variable +
         ", color=" + color +
         '}';
   }

@@ -20,26 +20,9 @@ public class RemoveColor extends ChangeInstruction {
 
   @Override
   public Change generateChange() {
-    Change change = new RemoveVariable(instance, varColor.getVariable()).generateChange();
-
-    Variable variable = new Variable();
-    variable.setColors(varColor.getVariable().getColors().stream()
-        .filter(c -> c != varColor.getColor()).collect(Collectors.toList()));
-
-    change.getAdding().setVariables(new ArrayList<>() {{ add(variable); }});
-
-    List<Constraint> new_constraints = new ArrayList<>();
-    for (Constraint constraint : change.getRemoving().getConstraints()) {
-      VarColor first = constraint.getFirst();
-      VarColor second = constraint.getSecond();
-      if (first.getVariable().equals(varColor.getVariable())) {
-        new_constraints.add(new Constraint(new VarColor(variable, first.getColor()), second));
-      } else if (second.getVariable().equals(varColor.getVariable())) {
-        new_constraints.add(new Constraint(first, new VarColor(variable, second.getColor())));
-      }
-    }
-
-    change.getAdding().setConstraints(new_constraints);
+    Change change = new Change();
+    change.getRemoving().getVarColors().add(varColor);
+    change.getRemoving().setConstraints(instance.getIncident(varColor));
 
     return change;
   }

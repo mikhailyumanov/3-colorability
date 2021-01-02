@@ -7,9 +7,9 @@ import com.mikhailyumanov.three_colorability.csp_instance.Variable;
 import com.mikhailyumanov.three_colorability.modifier.Change;
 
 public class RemoveVariable extends ChangeInstruction {
-  Variable variable;
+  int variable;
 
-  public RemoveVariable(CSPInstance instance, Variable variable) {
+  public RemoveVariable(CSPInstance instance, int variable) {
     super(instance);
     this.variable = variable;
   }
@@ -17,10 +17,12 @@ public class RemoveVariable extends ChangeInstruction {
   @Override
   public Change generateChange() {
     Change change = new Change();
-    change.getRemoving().getVariables().add(variable);
 
-    for (Color color : variable.getColors()) {
-      change.getRemoving().getConstraints().addAll(instance.getIncident(new VarColor(variable, color)));
+    Variable variable = instance.getVariable(this.variable);
+    change.getRemoving().getVarColors().addAll(variable.getVarColors());
+
+    for (VarColor varColor : variable.getVarColors()) {
+      change.getRemoving().getConstraints().addAll(instance.getIncident(varColor));
     }
 
     return change;

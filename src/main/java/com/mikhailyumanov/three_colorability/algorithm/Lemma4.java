@@ -2,7 +2,7 @@ package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
-import com.mikhailyumanov.three_colorability.modifier.Change;
+import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import com.mikhailyumanov.three_colorability.modifier.instructions.ChangeInstruction;
 import com.mikhailyumanov.three_colorability.modifier.instructions.RemoveColor;
 
@@ -11,30 +11,26 @@ import java.util.List;
 
 public class Lemma4 implements Reduction {
   @Override
-  public List<ChangeInstruction> perform(CSPInstance instance) {
-    List<ChangeInstruction> instructions = new ArrayList<>();
-
-    variables_loop:
+  public List<ChangeInstruction> perform(Modifier modifier, CSPInstance instance) {
     for (Variable variable : instance.getVariables()) {
-      for (Color color1 : variable.getColors()) {
-        for (Color color2 : variable.getColors()) {
-          if (color1 == color2) {
+      for (VarColor varColor1 : variable.getVarColors()) {
+        for (VarColor varColor2 : variable.getVarColors()) {
+          if (varColor1 == varColor2) {
             continue;
           }
 
-          VarColor varColor1 = new VarColor(variable, color1);
-          VarColor varColor2 = new VarColor(variable, color2);
-          List<Constraint> incident1 = instance.getIncident(varColor1);
-          List<Constraint> incident2 = instance.getIncident(varColor2);
-          if (incident1.containsAll(incident2)) {
-            instructions.add(new RemoveColor(instance, varColor1));
-
-            continue variables_loop;
+          List<VarColor> conflict1 = instance.getConflict(varColor1);
+          List<VarColor> conflict2 = instance.getConflict(varColor2);
+          if (!conflict1.isEmpty() &&
+              !conflict2.isEmpty() &&
+              conflict1.containsAll(conflict2)) {
+            modifier.addInstruction(new RemoveColor(instance, varColor1));
+            modifier.applyOne();
           }
         }
       }
     }
 
-    return instructions;
+    return new ArrayList<>();
   }
 }

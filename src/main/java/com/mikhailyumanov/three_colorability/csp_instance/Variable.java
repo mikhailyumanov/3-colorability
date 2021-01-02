@@ -1,40 +1,40 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Variable implements CSPEntity {
   private static int counter;
   private final int id;
-  List<Color> colors = new ArrayList<>();
+  private final List<VarColor> varColors;
 
-  public Variable() {
-    this.id = counter++;
+  public Variable(Variable other) {
+    this.id = other.id;
+    this.varColors = other.varColors;
   }
 
-  public Variable(List<Color> colors) {
-    this.id = counter++;
-    this.colors = colors;
+  public Variable(int id, List<VarColor> varColors) {
+    this.id = id;
+    this.varColors = varColors;
   }
 
-  public List<Color> getColors() {
-    return colors;
-  }
-
-  public void setColors(List<Color> colors) {
-    this.colors = colors;
+  public Variable(Map.Entry<Integer, List<VarColor>> integerListEntry) {
+    this.id = integerListEntry.getKey();
+    this.varColors = integerListEntry.getValue();
   }
 
   public int getId() {
     return id;
   }
 
+  public List<VarColor> getVarColors() {
+    return varColors;
+  }
+
   @Override
   public String toString() {
     return "Variable " + id + " {" + '\n' +
-        "\tcolors=" + colors + '\n' +
+        "\tvarColors=" + varColors + '\n' +
         '}';
   }
 
@@ -44,11 +44,11 @@ public class Variable implements CSPEntity {
     if (o == null || getClass() != o.getClass()) return false;
     Variable variable = (Variable) o;
     return id == variable.id &&
-        Objects.equals(new HashSet<>(colors), new HashSet<>(variable.colors));
+        Objects.equals(new HashSet<>(varColors), new HashSet<>(variable.varColors));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, colors);
+    return Objects.hash(id, varColors);
   }
 }

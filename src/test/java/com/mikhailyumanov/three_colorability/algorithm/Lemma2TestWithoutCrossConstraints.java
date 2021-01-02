@@ -2,84 +2,39 @@ package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
-import com.mikhailyumanov.three_colorability.modifier.Change;
 import com.mikhailyumanov.three_colorability.modifier.Modifier;
+import com.mikhailyumanov.three_colorability.parser.InputParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class Lemma2TestWithoutCrossConstraints {
-  Lemma2 lemma2 = new Lemma2();
-
-  List<Variable> variables = new ArrayList<>() {{
-    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
-    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
-    add(new Variable(List.of(Color.RED, Color.GREEN)));
-    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
-    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
-    add(new Variable(List.of(Color.RED, Color.GREEN, Color.BLUE)));
-  }};
-
-  List<Constraint> constraints = new ArrayList<>() {{
-    add(new Constraint(
-        new VarColor(variables.get(0), Color.BLUE),
-        new VarColor(variables.get(2), Color.RED)));
-    add(new Constraint(
-          new VarColor(variables.get(1), Color.RED),
-          new VarColor(variables.get(2), Color.RED)));
-    add(new Constraint(
-          new VarColor(variables.get(3), Color.GREEN),
-          new VarColor(variables.get(2), Color.GREEN)));
-    add(new Constraint(
-          new VarColor(variables.get(4), Color.GREEN),
-          new VarColor(variables.get(2), Color.GREEN)));
-    add(new Constraint(
-          new VarColor(variables.get(5), Color.RED),
-          new VarColor(variables.get(2), Color.GREEN)));
-  }};
-
-  CSPInstance instance = new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints));
+class Lemma2TestWithoutCrossConstraints extends TestWrapper{
+  Lemma2TestWithoutCrossConstraints() throws IOException {
+    super(new Lemma2(),
+        "src/main/resources/input/Lemma2TestWithoutCrossConstraints",
+        "src/main/resources/reduced/Lemma2TestWithoutCrossConstraints");
+  }
 
   @Test
   void testPerform() {
-    Modifier modifier = new Modifier(instance, lemma2.perform(instance));
-    modifier.apply();
-    CSPInstance instance_after = modifier.getInstance();
-
-    List<Constraint> constraints_final = new ArrayList<>() {{
-      add(new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(3), Color.GREEN)));
-      add(new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(4), Color.GREEN)));
-      add(new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(5), Color.RED)));
-      add(new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(3), Color.GREEN)));
-      add(new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(4), Color.GREEN)));
-      add(new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(5), Color.RED)));
-    }};
-
     assertEquals(
-        new CSPInstance(instance_after.getVariables(), constraints_final),
-        instance_after
+        test_reduced_instance,
+        train_reduced_instance
     );
 
     modifier.unapply();
 
     assertEquals(
-        new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints)),
+        test_input_instance,
         modifier.getInstance()
     );
+
   }
 }

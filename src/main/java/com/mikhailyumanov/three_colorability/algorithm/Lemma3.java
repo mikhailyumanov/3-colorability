@@ -3,6 +3,7 @@ package com.mikhailyumanov.three_colorability.algorithm;
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
+import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import com.mikhailyumanov.three_colorability.modifier.instructions.ChangeInstruction;
 import com.mikhailyumanov.three_colorability.modifier.instructions.RemoveVariable;
 
@@ -12,13 +13,13 @@ import java.util.stream.Collectors;
 
 public class Lemma3 implements Reduction {
   @Override
-  public List<ChangeInstruction> perform(CSPInstance instance) {
+  public List<ChangeInstruction> perform(Modifier modifier, CSPInstance instance) {
     List<ChangeInstruction> instructions = new ArrayList<>();
 
     List<VarColor> varColors = instance.getVarColors();
     for (VarColor varColor1 : varColors) {
       for (VarColor varColor2 : varColors) {
-        if (varColor1.getVariable().equals(varColor2.getVariable())) {
+        if (varColor1.getVariable() == varColor2.getVariable()) {
           continue;
         }
 
@@ -43,15 +44,17 @@ public class Lemma3 implements Reduction {
   }
 
   public List<Constraint> getSuitableConstraints(CSPInstance instance, VarColor varColor1, VarColor varColor2) {
-    return instance.getConstraints().stream()
-        .filter(pair -> pair.contains(varColor1))
-        .filter(pair ->
-            (pair.getFirst().equals(varColor1) &&
-                pair.getSecond().getVariable().equals(varColor2.getVariable()) &&
-                !pair.getSecond().getColor().equals(varColor2.getColor())) ||
-                (pair.getSecond().equals(varColor1) &&
-                    pair.getFirst().getVariable().equals(varColor2.getVariable()) &&
-                    !pair.getFirst().getColor().equals(varColor2.getColor())))
-        .collect(Collectors.toList());
+    List<Constraint> list = new ArrayList<>();
+    for (Constraint pair : instance.getIncident(varColor1)) {
+      if ((pair.getFirst().equals(varColor1) &&
+          pair.getSecond().getVariable() == varColor2.getVariable() &&
+          !pair.getSecond().getColor().equals(varColor2.getColor())) ||
+          (pair.getSecond().equals(varColor1) &&
+              pair.getFirst().getVariable() == varColor2.getVariable() &&
+              !pair.getFirst().getColor().equals(varColor2.getColor()))) {
+        list.add(pair);
+      }
+    }
+    return list;
   }
 }
