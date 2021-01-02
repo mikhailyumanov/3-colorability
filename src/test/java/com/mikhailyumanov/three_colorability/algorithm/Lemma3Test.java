@@ -2,6 +2,8 @@ package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
+import com.mikhailyumanov.three_colorability.modifier.Change;
+import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -69,8 +71,9 @@ class Lemma3Test {
   CSPInstance instance = new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints));
   
   @Test
-  void testResultWithDifference() {
-    CSPInstance instance_after = instance.withDifference(lemma3.perform(instance));
+  void testPerform() {
+    Modifier modifier = new Modifier(instance, lemma3.perform(instance));
+    modifier.apply();
 
     List<Constraint> constraints_final = new ArrayList<>() {{
       add(new Constraint(
@@ -89,68 +92,14 @@ class Lemma3Test {
 
     assertEquals(
         new CSPInstance(variables.subList(2, 4), constraints_final),
-        instance_after
-    );
-  }
-
-  @Test
-  void testPerform() {
-    CSPInstance removing = new CSPInstance();
-    removing.setVariables(List.of(variables.get(0), variables.get(1)));
-    removing.setConstraints(List.of(
-        new Constraint(
-            new VarColor(variables.get(0), Color.RED),
-            new VarColor(variables.get(1), Color.RED)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.RED),
-            new VarColor(variables.get(1), Color.BLUE)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(1), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(2), Color.RED)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(2), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(3), Color.BLUE)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.BLUE),
-            new VarColor(variables.get(3), Color.GREEN))
-    ));
-
-    Difference difference = new Difference();
-    difference.setRemoving(removing);
-
-    assertEquals(
-        difference,
-        lemma3.perform(instance)
-    );
-  }
-
-  @Test
-  void testGetSuitableConstraints() {
-    assertEquals(
-        List.of(
-            new Constraint(
-                new VarColor(variables.get(0), Color.RED),
-                new VarColor(variables.get(1), Color.RED)),
-            new Constraint(
-                new VarColor(variables.get(0), Color.RED),
-                new VarColor(variables.get(1), Color.BLUE))
-            ),
-        lemma3.getSuitableConstraints(instance, varColor1, varColor2)
+        modifier.getInstance()
     );
 
+    modifier.unapply();
+
     assertEquals(
-        List.of(
-            new Constraint(
-                new VarColor(variables.get(0), Color.BLUE),
-                new VarColor(variables.get(1), Color.GREEN))
-        ),
-        lemma3.getSuitableConstraints(instance, varColor2, varColor1)
+        new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints)),
+        modifier.getInstance()
     );
   }
 }

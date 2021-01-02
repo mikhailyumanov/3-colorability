@@ -1,6 +1,9 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
+import com.mikhailyumanov.three_colorability.modifier.Change;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -74,8 +77,8 @@ public class CSPInstance {
     return this;
   }
 
-  public CSPInstance withDifference(Difference difference) {
-    return this.union(difference.getAdding()).complement(difference.getRemoving());
+  public CSPInstance withChange(Change change) {
+    return this.union(change.getAdding()).complement(change.getRemoving());
   }
 
   @Override
@@ -83,8 +86,8 @@ public class CSPInstance {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CSPInstance instance = (CSPInstance) o;
-    return Objects.equals(variables, instance.variables) &&
-        Objects.equals(constraints, instance.constraints);
+    return Objects.equals(new HashSet<>(variables), new HashSet<>(instance.variables)) &&
+        Objects.equals(new HashSet<>(constraints), new HashSet<>(instance.constraints));
   }
 
   @Override

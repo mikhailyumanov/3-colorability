@@ -1,23 +1,22 @@
-package com.mikhailyumanov.three_colorability.csp_instance;
+package com.mikhailyumanov.three_colorability.modifier;
+
+import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 
 import java.util.Objects;
 
-public class Difference {
+public class Change {
   private CSPInstance adding = new CSPInstance();
   private CSPInstance removing = new CSPInstance();
 
-  public Difference() {}
+  public Change() {}
 
-  public Difference(CSPInstance adding, CSPInstance removing) {
+  public Change(CSPInstance adding, CSPInstance removing) {
     this.adding = adding;
     this.removing = removing;
   }
 
-  public Difference union(Difference other) {
-    adding.union(other.adding);
-    removing.union(other.removing);
-
-    return this;
+  public Change reversed() {
+    return new Change(removing, adding);
   }
 
   public CSPInstance getAdding() {
@@ -40,7 +39,7 @@ public class Difference {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Difference that = (Difference) o;
+    Change that = (Change) o;
     return Objects.equals(adding, that.adding) &&
         Objects.equals(removing, that.removing);
   }

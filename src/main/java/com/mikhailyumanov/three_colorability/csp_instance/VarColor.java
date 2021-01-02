@@ -2,7 +2,7 @@ package com.mikhailyumanov.three_colorability.csp_instance;
 
 import java.util.Objects;
 
-public class VarColor {
+public class VarColor implements CSPEntity {
   Variable variable;
   Color color;
 

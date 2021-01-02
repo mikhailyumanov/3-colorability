@@ -1,10 +1,11 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-public class Variable {
+public class Variable implements CSPEntity {
   private static int counter;
   private final int id;
   List<Color> colors = new ArrayList<>();
@@ -43,7 +44,7 @@ public class Variable {
     if (o == null || getClass() != o.getClass()) return false;
     Variable variable = (Variable) o;
     return id == variable.id &&
-        Objects.equals(colors, variable.colors);
+        Objects.equals(new HashSet<>(colors), new HashSet<>(variable.colors));
   }
 
   @Override

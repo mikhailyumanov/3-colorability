@@ -2,7 +2,7 @@ package com.mikhailyumanov.three_colorability.csp_instance;
 
 import java.util.Objects;
 
-public class Constraint {
+public class Constraint implements CSPEntity {
   VarColor first;
   VarColor second;
 

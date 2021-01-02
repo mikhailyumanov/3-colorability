@@ -1,17 +1,19 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
-import com.mikhailyumanov.three_colorability.csp_instance.Difference;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
+import com.mikhailyumanov.three_colorability.modifier.instructions.ChangeInstruction;
+import com.mikhailyumanov.three_colorability.modifier.instructions.RemoveVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Lemma3 implements Reduction {
   @Override
-  public Difference perform(CSPInstance instance) {
-    Difference difference = new Difference();
+  public List<ChangeInstruction> perform(CSPInstance instance) {
+    List<ChangeInstruction> instructions = new ArrayList<>();
 
     List<VarColor> varColors = instance.getVarColors();
     for (VarColor varColor1 : varColors) {
@@ -31,14 +33,13 @@ public class Lemma3 implements Reduction {
 
         if (instance.getIncident(varColor1).size() == involving1.size() &&
             instance.getIncident(varColor2).size() == involving2.size()) {
-          difference
-              .union(toUpdate(instance, varColor1.getVariable()))
-              .union(toUpdate(instance, varColor2.getVariable()));
+          instructions.add(new RemoveVariable(instance, varColor1.getVariable()));
+          instructions.add(new RemoveVariable(instance, varColor2.getVariable()));
         }
       }
     }
 
-    return difference;
+    return instructions;
   }
 
   public List<Constraint> getSuitableConstraints(CSPInstance instance, VarColor varColor1, VarColor varColor2) {

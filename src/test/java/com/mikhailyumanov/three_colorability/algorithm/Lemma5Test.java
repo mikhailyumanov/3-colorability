@@ -1,11 +1,11 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
+import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,8 +58,10 @@ class Lemma5Test {
   CSPInstance instance = new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints));
 
   @Test
-  void testResultWithDifference() {
-    CSPInstance instance_after = instance.withDifference(lemma5.perform(instance));
+  void testPerform() {
+    Modifier modifier = new Modifier(instance, lemma5.perform(instance));
+    modifier.apply();
+    CSPInstance instance_after = modifier.getInstance();
 
     List<Constraint> constraints_final = new ArrayList<>() {{
       add(new Constraint(
@@ -77,39 +79,12 @@ class Lemma5Test {
         new CSPInstance(variables.subList(1, 4), constraints_final),
         instance_after
     );
-  }
 
-  @Test
-  void testPerform() {
-    CSPInstance removing = new CSPInstance();
-    removing.setVariables(List.of(variables.get(0)));
-    removing.setConstraints(new ArrayList<>() {{
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.RED),
-          new VarColor(variables.get(1), Color.RED)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.RED),
-          new VarColor(variables.get(1), Color.GREEN)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.RED),
-          new VarColor(variables.get(2), Color.GREEN)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.BLUE),
-          new VarColor(variables.get(1), Color.RED)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.BLUE),
-          new VarColor(variables.get(1), Color.GREEN)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.BLUE),
-          new VarColor(variables.get(2), Color.GREEN)));
-      add(new Constraint(
-          new VarColor(variables.get(0), Color.BLUE),
-          new VarColor(variables.get(2), Color.RED)));
-    }});
+    modifier.unapply();
 
     assertEquals(
-        removing,
-        lemma5.perform(instance).getRemoving()
+        new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints)),
+        modifier.getInstance()
     );
   }
 }

@@ -2,10 +2,11 @@ package com.mikhailyumanov.three_colorability.algorithm;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
+import com.mikhailyumanov.three_colorability.modifier.Change;
+import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,156 +48,49 @@ class Lemma2TestWithCrossConstraints {
           new VarColor(variables.get(2), Color.GREEN)));
   }};
 
-  CSPInstance instance = new CSPInstance(variables, constraints);
+  CSPInstance instance = new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints));
 
   @Test
-  void testResultWithDifference() {
-    CSPInstance instance_after = instance.withDifference(lemma2.perform(instance));
+  void testPerform() {
+    Modifier modifier = new Modifier(instance, lemma2.perform(instance));
+    modifier.apply();
+    CSPInstance instance_after = modifier.getInstance();
 
-    List<Constraint> constraints_final = List.of(
-        new Constraint(
+    List<Constraint> constraints_final = new ArrayList<>() {{
+      add(new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(1), Color.GREEN)),
-        new Constraint(
+            new VarColor(variables.get(1), Color.GREEN)));
+      add(new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(3), Color.GREEN)),
-        new Constraint(
+            new VarColor(variables.get(3), Color.GREEN)));
+      add(new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(4), Color.GREEN)),
-        new Constraint(
+            new VarColor(variables.get(4), Color.GREEN)));
+      add(new Constraint(
             new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(5), Color.RED)),
-        new Constraint(
+            new VarColor(variables.get(5), Color.RED)));
+      add(new Constraint(
             new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(3), Color.GREEN)),
-        new Constraint(
+            new VarColor(variables.get(3), Color.GREEN)));
+      add(new Constraint(
             new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(4), Color.GREEN)),
-        new Constraint(
+            new VarColor(variables.get(4), Color.GREEN)));
+      add(new Constraint(
             new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(5), Color.RED))
-    );
+            new VarColor(variables.get(5), Color.RED)));
+    }};
 
     assertEquals(
         new CSPInstance(instance_after.getVariables(), constraints_final),
         instance_after
     );
-  }
 
-  @Test
-  void testToEliminate() {
-    CSPInstance adding = new CSPInstance();
-    adding.setConstraints(List.of(
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(1), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(3), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(4), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(5), Color.RED)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(3), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(4), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(5), Color.RED))
-    ));
-
-    CSPInstance removing = new CSPInstance();
-    removing.setVariables(List.of(variables.get(2)));
-    removing.setConstraints(List.of(
-        new Constraint(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(2), Color.RED)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.RED),
-            new VarColor(variables.get(2), Color.RED)),
-        new Constraint(
-            new VarColor(variables.get(1), Color.GREEN),
-            new VarColor(variables.get(2), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(3), Color.GREEN),
-            new VarColor(variables.get(2), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(4), Color.GREEN),
-            new VarColor(variables.get(2), Color.GREEN)),
-        new Constraint(
-            new VarColor(variables.get(5), Color.RED),
-            new VarColor(variables.get(2), Color.GREEN))
-    ));
+    modifier.unapply();
 
     assertEquals(
-        new Difference(adding, removing),
-        lemma2.toUpdate(instance, variables.get(2))
-    );
-  }
-
-  @Test
-  void testGetConflict() {
-    assertEquals(
-        List.of(
-            new VarColor(variables.get(0), Color.BLUE),
-            new VarColor(variables.get(1), Color.RED)
-        ),
-        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.RED))
-    );
-    assertEquals(
-        List.of(
-            new VarColor(variables.get(1), Color.GREEN),
-            new VarColor(variables.get(3), Color.GREEN),
-            new VarColor(variables.get(4), Color.GREEN),
-            new VarColor(variables.get(5), Color.RED)
-        ),
-        lemma2.getConflict(instance, new VarColor(variables.get(2), Color.GREEN))
-    );
-  }
-
-  @Test
-  void testGetCartesianProduct() {
-    List<VarColor> l1 = List.of(
-        new VarColor(variables.get(0), Color.BLUE),
-        new VarColor(variables.get(1), Color.RED)
+        new CSPInstance(new ArrayList<>(variables), new ArrayList<>(constraints)),
+        modifier.getInstance()
     );
 
-    List<VarColor> l2 = List.of(
-        new VarColor(variables.get(1), Color.GREEN),
-        new VarColor(variables.get(3), Color.GREEN),
-        new VarColor(variables.get(4), Color.GREEN),
-        new VarColor(variables.get(5), Color.RED));
-
-    assertEquals(
-        List.of(
-            new Constraint(
-                new VarColor(variables.get(0), Color.BLUE),
-                new VarColor(variables.get(1), Color.GREEN)),
-            new Constraint(
-                new VarColor(variables.get(0), Color.BLUE),
-                new VarColor(variables.get(3), Color.GREEN)),
-            new Constraint(
-                new VarColor(variables.get(0), Color.BLUE),
-                new VarColor(variables.get(4), Color.GREEN)),
-            new Constraint(
-                new VarColor(variables.get(0), Color.BLUE),
-                new VarColor(variables.get(5), Color.RED)),
-            new Constraint(
-                new VarColor(variables.get(1), Color.RED),
-                new VarColor(variables.get(3), Color.GREEN)),
-            new Constraint(
-                new VarColor(variables.get(1), Color.RED),
-                new VarColor(variables.get(4), Color.GREEN)),
-            new Constraint(
-                new VarColor(variables.get(1), Color.RED),
-                new VarColor(variables.get(5), Color.RED))
-        ),
-        lemma2.getCartesianProduct(l1, l2)
-    );
   }
 }
