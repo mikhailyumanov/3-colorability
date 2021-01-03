@@ -4,7 +4,6 @@ import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Variable;
-import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import com.mikhailyumanov.three_colorability.modifier.instructions.RemoveColor;
 
 import java.util.ArrayList;

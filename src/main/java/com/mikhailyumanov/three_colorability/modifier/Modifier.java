@@ -2,12 +2,9 @@ package com.mikhailyumanov.three_colorability.modifier;
 
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.modifier.instructions.ChangeInstruction;
-import com.mikhailyumanov.three_colorability.modifier.instructions.Lemma2RemoveVariable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Modifier {
   List<Change> changeListApply = new ArrayList<>();

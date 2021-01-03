@@ -1,7 +1,6 @@
 package com.mikhailyumanov.three_colorability.modifier.instructions;
 
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
-import com.mikhailyumanov.three_colorability.csp_instance.Color;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Variable;
 import com.mikhailyumanov.three_colorability.modifier.Change;

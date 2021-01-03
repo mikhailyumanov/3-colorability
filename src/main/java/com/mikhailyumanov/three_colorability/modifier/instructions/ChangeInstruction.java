@@ -4,7 +4,7 @@ import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.modifier.Change;
 
 public abstract class ChangeInstruction {
-  CSPInstance instance;
+  final CSPInstance instance;
 
   public ChangeInstruction(CSPInstance instance) {
     this.instance = instance;

@@ -1,7 +1,5 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 

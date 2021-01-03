@@ -1,7 +1,6 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Variable implements CSPEntity {
   private static int counter;
