@@ -1,6 +1,9 @@
 package com.mikhailyumanov.three_colorability.csp_instance;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Constraint implements CSPEntity {
   VarColor first;
@@ -31,18 +34,31 @@ public class Constraint implements CSPEntity {
     return first.equals(t) || second.equals(t);
   }
 
+
+  /** WARNING: Object.equals below compares constraints as <u>unordered</u> pairs
+   *
+   */
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Constraint constraint = (Constraint) o;
     return Objects.equals(first, constraint.first) &&
-        Objects.equals(second, constraint.second);
+        Objects.equals(second, constraint.second) ||
+
+        Objects.equals(first, constraint.second) &&
+            Objects.equals(second, constraint.first);
   }
+
+
+  /** WARNING: Object.equals below compares constraints as <u>unordered</u> pairs
+   *
+   */
 
   @Override
   public int hashCode() {
-    return Objects.hash(first, second);
+    return Objects.hash(Set.of(first, second));
   }
 
   @Override

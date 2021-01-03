@@ -38,6 +38,10 @@ public class Variable implements CSPEntity {
         '}';
   }
 
+
+  /** WARNING: Object.equals below compares Sets, not Lists
+   */
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

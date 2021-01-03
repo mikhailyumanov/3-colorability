@@ -1,5 +1,6 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
+import com.mikhailyumanov.three_colorability.algorithm.reductions.Reduction;
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.modifier.Modifier;
 import com.mikhailyumanov.three_colorability.parser.InputParser;
@@ -21,9 +22,9 @@ public class TestWrapper {
     test_reduced_instance = InputParser.parse(reduced);
 
     CSPInstance instance = CSPInstance.copyFrom(test_input_instance);
-    modifier = new Modifier(instance);
-    modifier.addChangeList(reduction.perform(modifier, instance));
-    modifier.apply();
-    train_reduced_instance = modifier.getInstance();
+    modifier = new Modifier();
+    reduction.perform(modifier, instance);
+    train_reduced_instance = CSPInstance.copyFrom(instance);
+    modifier.apply(train_reduced_instance);
   }
 }

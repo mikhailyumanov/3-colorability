@@ -7,7 +7,7 @@ import com.mikhailyumanov.three_colorability.csp_instance.Variable;
 import com.mikhailyumanov.three_colorability.modifier.Change;
 
 public class RemoveVariable extends ChangeInstruction {
-  int variable;
+  private final int variable;
 
   public RemoveVariable(CSPInstance instance, int variable) {
     super(instance);
@@ -19,6 +19,7 @@ public class RemoveVariable extends ChangeInstruction {
     Change change = new Change();
 
     Variable variable = instance.getVariable(this.variable);
+    change.getRemoving().getVariable_ids().add(this.variable);
     change.getRemoving().getVarColors().addAll(variable.getVarColors());
 
     for (VarColor varColor : variable.getVarColors()) {

@@ -11,7 +11,7 @@ public class VarColor implements CSPEntity {
     this.color = color;
   }
 
-  public int getVariable() {
+  public int getVariableId() {
     return variable;
   }
 

@@ -1,5 +1,6 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
+import com.mikhailyumanov.three_colorability.algorithm.reductions.Lemma6;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,13 +19,6 @@ class Lemma6Test extends TestWrapper {
     assertEquals(
         test_reduced_instance,
         train_reduced_instance
-    );
-
-    modifier.unapply();
-
-    assertEquals(
-        test_input_instance,
-        modifier.getInstance()
     );
   }
 }

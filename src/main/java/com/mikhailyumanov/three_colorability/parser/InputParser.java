@@ -1,21 +1,13 @@
 package com.mikhailyumanov.three_colorability.parser;
 
-import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
-import com.mikhailyumanov.three_colorability.csp_instance.Color;
-import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
-import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
+import com.mikhailyumanov.three_colorability.csp_instance.*;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class InputParser {
   public static CSPInstance parse(String stringPath) throws IOException {
@@ -27,8 +19,6 @@ public class InputParser {
     List<Constraint> constraints = new ArrayList<>();
 
     int num_variables = scanner.nextInt();
-    int num_constraints = scanner.nextInt();
-
     for (int i = 0; i < num_variables; i++) {
       int variable = scanner.nextInt();
       variable_ids.add(variable);
@@ -39,12 +29,22 @@ public class InputParser {
       }
     }
 
+    int num_constraints = scanner.nextInt();
     for (int i = 0; i < num_constraints; i++) {
       VarColor varColor1 = new VarColor(scanner.nextInt(), Color.fromInteger(scanner.nextInt()));
       VarColor varColor2 = new VarColor(scanner.nextInt(), Color.fromInteger(scanner.nextInt()));
       constraints.add(new Constraint(varColor1, varColor2));
     }
-    
-    return new CSPInstance(variable_ids, varColors, constraints);
+
+    CSPInstance instance = new CSPInstance(variable_ids, varColors, constraints);
+
+    int num_colored_variables = scanner.nextInt();
+    for (int i = 0; i < num_colored_variables; i++) {
+      VarColor varColor = new VarColor(scanner.nextInt(), Color.fromInteger(scanner.nextInt()));
+      instance.getColoring().assignColor(varColor);
+    }
+
+
+    return instance;
   }
 }

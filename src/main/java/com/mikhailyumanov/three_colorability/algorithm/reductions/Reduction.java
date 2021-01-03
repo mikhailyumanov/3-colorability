@@ -1,4 +1,4 @@
-package com.mikhailyumanov.three_colorability.algorithm;
+package com.mikhailyumanov.three_colorability.algorithm.reductions;
 
 import com.mikhailyumanov.three_colorability.csp_instance.*;
 import com.mikhailyumanov.three_colorability.modifier.Modifier;
@@ -8,5 +8,5 @@ import java.util.List;
 
 @FunctionalInterface
 public interface Reduction {
-  List<ChangeInstruction> perform(Modifier modifier, CSPInstance instance);
+  void perform(Modifier modifier, CSPInstance instance);
 }

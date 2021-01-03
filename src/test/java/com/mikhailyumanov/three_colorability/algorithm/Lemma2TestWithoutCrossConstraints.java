@@ -1,17 +1,9 @@
 package com.mikhailyumanov.three_colorability.algorithm;
 
-import com.mikhailyumanov.three_colorability.csp_instance.*;
-import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
-import com.mikhailyumanov.three_colorability.modifier.Modifier;
-import com.mikhailyumanov.three_colorability.parser.InputParser;
+import com.mikhailyumanov.three_colorability.algorithm.reductions.Lemma2;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,13 +20,5 @@ class Lemma2TestWithoutCrossConstraints extends TestWrapper{
         test_reduced_instance,
         train_reduced_instance
     );
-
-    modifier.unapply();
-
-    assertEquals(
-        test_input_instance,
-        modifier.getInstance()
-    );
-
   }
 }

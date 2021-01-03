@@ -1,25 +1,22 @@
-package com.mikhailyumanov.three_colorability.algorithm;
+package com.mikhailyumanov.three_colorability.algorithm.reductions;
 
 import com.mikhailyumanov.three_colorability.csp_instance.CSPInstance;
 import com.mikhailyumanov.three_colorability.csp_instance.VarColor;
 import com.mikhailyumanov.three_colorability.csp_instance.Constraint;
 import com.mikhailyumanov.three_colorability.modifier.Modifier;
-import com.mikhailyumanov.three_colorability.modifier.instructions.ChangeInstruction;
+import com.mikhailyumanov.three_colorability.modifier.instructions.AssignColor;
 import com.mikhailyumanov.three_colorability.modifier.instructions.RemoveVariable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Lemma3 implements Reduction {
   @Override
-  public List<ChangeInstruction> perform(Modifier modifier, CSPInstance instance) {
-    List<ChangeInstruction> instructions = new ArrayList<>();
-
+  public void perform(Modifier modifier, CSPInstance instance) {
     List<VarColor> varColors = instance.getVarColors();
     for (VarColor varColor1 : varColors) {
       for (VarColor varColor2 : varColors) {
-        if (varColor1.getVariable() == varColor2.getVariable()) {
+        if (varColor1.getVariableId() == varColor2.getVariableId()) {
           continue;
         }
 
@@ -34,23 +31,25 @@ public class Lemma3 implements Reduction {
 
         if (instance.getIncident(varColor1).size() == involving1.size() &&
             instance.getIncident(varColor2).size() == involving2.size()) {
-          instructions.add(new RemoveVariable(instance, varColor1.getVariable()));
-          instructions.add(new RemoveVariable(instance, varColor2.getVariable()));
+          modifier.addInstruction(new RemoveVariable(instance, varColor1.getVariableId()));
+          modifier.addInstruction(new RemoveVariable(instance, varColor2.getVariableId()));
+          modifier.addInstruction(new AssignColor(instance, varColor1));
+          modifier.addInstruction(new AssignColor(instance, varColor2));
         }
       }
     }
 
-    return instructions;
+    modifier.apply(instance);
   }
 
   public List<Constraint> getSuitableConstraints(CSPInstance instance, VarColor varColor1, VarColor varColor2) {
     List<Constraint> list = new ArrayList<>();
     for (Constraint pair : instance.getIncident(varColor1)) {
       if ((pair.getFirst().equals(varColor1) &&
-          pair.getSecond().getVariable() == varColor2.getVariable() &&
+          pair.getSecond().getVariableId() == varColor2.getVariableId() &&
           !pair.getSecond().getColor().equals(varColor2.getColor())) ||
           (pair.getSecond().equals(varColor1) &&
-              pair.getFirst().getVariable() == varColor2.getVariable() &&
+              pair.getFirst().getVariableId() == varColor2.getVariableId() &&
               !pair.getFirst().getColor().equals(varColor2.getColor()))) {
         list.add(pair);
       }

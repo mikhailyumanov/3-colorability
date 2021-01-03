@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RemoveColor extends ChangeInstruction {
-  VarColor varColor;
+  private final VarColor varColor;
   
   public RemoveColor(CSPInstance instance, VarColor varColor) {
     super(instance);

@@ -6,9 +6,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CSPInstance {
-  List<Integer> variable_ids = new ArrayList<>();
-  List<VarColor> varColors = new ArrayList<>();
-  List<Constraint> constraints = new ArrayList<>();
+  private List<Integer> variable_ids = new ArrayList<>();
+  private List<VarColor> varColors = new ArrayList<>();
+  private List<Constraint> constraints = new ArrayList<>();
+
+  private final Coloring coloring = new Coloring(this);
 
 
   /** Constructors
@@ -62,7 +64,7 @@ public class CSPInstance {
 
   public Variable getVariable(int i) {
     return new Variable(i, varColors.stream()
-        .filter(varColor -> varColor.getVariable() == i)
+        .filter(varColor -> varColor.getVariableId() == i)
         .collect(Collectors.toList()));
   }
 
@@ -73,7 +75,7 @@ public class CSPInstance {
    */
 
   public List<Variable> getVariables() {
-    Map<Integer, List<VarColor>> tmp = varColors.stream().collect(Collectors.groupingBy(VarColor::getVariable));
+    Map<Integer, List<VarColor>> tmp = varColors.stream().collect(Collectors.groupingBy(VarColor::getVariableId));
     return tmp.entrySet().stream().map(Variable::new).collect(Collectors.toList());
   }
 
@@ -82,12 +84,19 @@ public class CSPInstance {
    */
 
   public CSPInstance union(CSPInstance other) {
+    variable_ids.addAll(other.getVariable_ids());
+    variable_ids = variable_ids.stream().distinct().collect(Collectors.toList());
+
     varColors.addAll(other.getVarColors());
     varColors = varColors.stream().distinct().collect(Collectors.toList());
 
     constraints.addAll(other.getConstraints());
     constraints = constraints.stream().distinct().collect(Collectors.toList());
-
+  
+    List<VarColor> coloring_list = coloring.getVarColors();
+    coloring_list.addAll(other.coloring.getVarColors());
+    coloring.setVarColors(coloring_list.stream().distinct().collect(Collectors.toList()));
+    
     return this;
   }
 
@@ -96,8 +105,10 @@ public class CSPInstance {
    */
 
   public CSPInstance complement(CSPInstance other) {
+    variable_ids.removeAll(other.getVariable_ids());
     varColors.removeAll(other.getVarColors());
     constraints.removeAll(other.getConstraints());
+    coloring.getVarColors().removeAll(other.coloring.getVarColors());
 
     return this;
   }
@@ -110,6 +121,13 @@ public class CSPInstance {
     return this.union(change.getAdding()).complement(change.getRemoving());
   }
 
+
+  /** Assign color to variable
+   */
+
+  public void assignColor(VarColor varColor) {
+    coloring.assignColor(varColor);
+  }
 
   /** Standard getters and setters
    */
@@ -138,25 +156,35 @@ public class CSPInstance {
     this.variable_ids = variable_ids;
   }
 
+  public Coloring getColoring() {
+    return coloring;
+  }
+
   @Override
   public String toString() {
-    return "CSPInstance{\n" +
-        "variables=" + varColors + ", \n" +
-        "constraints=" + constraints + '\n' +
-        '}';
+    return "CSPInstance{" +
+        "variable_ids=" + variable_ids + "\n" +
+        ", varColors=" + varColors + "\n" +
+        ", constraints=" + constraints + "\n" +
+        ", coloring=" + coloring + "\n" +
+        '}' + "\n";
   }
+
+  /** WARNING: Object.equals below compares Sets, not Lists
+   */
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CSPInstance instance = (CSPInstance) o;
-    return Objects.equals(new HashSet<>(varColors), new HashSet<>(instance.varColors)) &&
+    return Objects.equals(new HashSet<>(variable_ids), new HashSet<>(instance.variable_ids)) &&
+        Objects.equals(new HashSet<>(varColors), new HashSet<>(instance.varColors)) &&
         Objects.equals(new HashSet<>(constraints), new HashSet<>(instance.constraints));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(varColors, constraints);
+    return Objects.hash(variable_ids, varColors, constraints);
   }
 }

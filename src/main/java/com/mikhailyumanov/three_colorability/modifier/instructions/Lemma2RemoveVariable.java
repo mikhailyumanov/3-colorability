@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Lemma2RemoveVariable extends ChangeInstruction {
-  Variable variable;
+  private final Variable variable;
 
   public Lemma2RemoveVariable(CSPInstance instance, Variable variable) {
     super(instance);
@@ -30,6 +30,7 @@ public class Lemma2RemoveVariable extends ChangeInstruction {
 
     CSPInstance removing = new CSPInstance();
 
+    removing.getVariable_ids().add(variable.getId());
     removing.setVarColors(variable.getVarColors());
     removing.setConstraints(
         instance.getConstraints().stream()
@@ -43,7 +44,7 @@ public class Lemma2RemoveVariable extends ChangeInstruction {
     ArrayList<Constraint> tmp = new ArrayList<>();
     for (VarColor varColor1 : l1) {
       for (VarColor varColor2 : l2) {
-        if (varColor1.getVariable() != varColor2.getVariable()) {
+        if (varColor1.getVariableId() != varColor2.getVariableId()) {
           tmp.add(new Constraint(varColor1, varColor2));
         }
       }
